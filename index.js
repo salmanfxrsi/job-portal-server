@@ -10,7 +10,7 @@ app.use(express.json());
 
 
 // mongodb crud operation
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.upkox.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
 
 const client = new MongoClient(uri, {
@@ -27,9 +27,17 @@ async function run() {
   try {
     // await client.connect();
 
-    // get operation
+    // find all job read operation
     app.get('/jobs', async(req,res)=>{
         const result = await jobCollection.find().toArray();
+        res.send(result);
+    });
+
+    // find one job get read operation
+    app.get('/jobs/:id', async(req,res) => {
+        const id = req.params.id;
+        const query = { _id: new ObjectId(id) };
+        const result = await jobCollection.findOne(query);
         res.send(result);
     });
 
